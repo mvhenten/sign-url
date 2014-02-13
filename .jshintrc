@@ -1,0 +1,16 @@
+{
+    "node": true,
+    "nonstandard": true,
+    "quotmark": "single",
+    "undef": true,
+    "unused": true,
+    "strict": true,
+    "esnext": true,
+    "expr": true,
+    "globals": {
+        "test": true,
+        "suite": true,
+        "setup": true,
+	"teardown": true
+    }
+}

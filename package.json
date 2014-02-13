@@ -1,0 +1,37 @@
+{
+    "name": "sign-url",
+    "version": "0.0.1",
+    "description": "Create and validate signed urls",
+    "main": "index.js",
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha -r test/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/mvhenten/sign-url.git"
+    },
+    "keywords": [
+    "url",
+    "uri",
+    "sign",
+    "signature",
+    "security",
+    "authentication",
+    "token"
+  ],
+    "author": "Matthijs van Henten",
+    "license": "BSD",
+    "bugs": {
+        "url": "https://github.com/mvhenten/sign-url/issues"
+    },
+    "dependencies": {
+        "qs": "~0.6.6"
+    },
+    "devDependencies": {
+        "Faker": "~0.5.11",
+        "mocha": "~1.17.1",
+        "lodash": "~2.4.1",
+        "js-beautify": "~1.4.2",
+        "jshint": "~2.4.3"
+    }
+}
