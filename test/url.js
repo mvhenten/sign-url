@@ -3,13 +3,14 @@
 var assert = require('assert'),
     util = require('util'),
     _ = require('lodash'),
+    Url = require('url'),
     Query = require('querystring'),
     Sign = require('../lib/url'),
     Faker = require('Faker');
 
 
 function _randomURL() {
-    var query = Faker.Lorem.words(9).reduce(function(query, word) {
+    var query = Faker.Lorem.words(3).reduce(function(query, word) {
         query[word] = Faker.random.number(99999);
         return query;
     }, {});
@@ -17,20 +18,50 @@ function _randomURL() {
     return util.format('http://%s?%s', Faker.Internet.domainName(), Query.stringify(query));
 }
 
-// test to prove url can be signed
-// and check is ok
-// test to prove url cannot be tampered with
-// and is not valid
-// test to prove the order of url params can be mangled
-
-
 suite('Sign and verify signatures', function() {
     test('Sign should sign an url, and check should validate ok for that url', function() {
         _.times(999, function() {
             var url = _randomURL(),
                 secret = Faker.random.number(Date.now()).toString(36),
                 signed = Sign.sign(url, secret);
+
             assert.ok(Sign.check(signed, secret));
         });
     });
+
+    test('Query cannot be tampered with', function() {
+        _.times(999, function() {
+            var url = _randomURL(),
+                secret = Faker.random.number(Date.now()).toString(36),
+                signed = Sign.sign(url, secret),
+                hacked = Url.parse(signed, true),
+                query = hacked.query;
+
+            query[_.sample(_.keys(hacked.query))] = _.random(999);
+            hacked.search = Query.stringify(query);
+
+            assert.equal(Sign.check(hacked.format(), secret), false);
+        });
+    });
+
+
+    test('The order of the query string keys is not relevant', function() {
+        _.times(999, function() {
+            var url = _randomURL(),
+                secret = Faker.random.number(Date.now()).toString(36),
+                signed = Sign.sign(url, secret),
+                shuffled = Url.parse(signed, true),
+                query = shuffled.query;
+
+            query = _.reduce(_.shuffle(_.keys(query)), function(q, key) {
+                q[key] = query[key];
+                return q;
+            }, {})
+
+            shuffled.search = Query.stringify(query);
+
+            assert.equal(Sign.check(shuffled.format(), secret), true);
+        });
+    });
+
 });
