@@ -23,7 +23,7 @@ suite('Sign and verify signatures', function() {
         _.times(999, function() {
             var url = _randomURL(),
                 secret = Faker.random.number(Date.now()).toString(36),
-                signed = Sign.sign(url, secret);
+                signed = Sign.url(url, secret);
 
             assert.ok(Sign.check(signed, secret));
         });
@@ -33,7 +33,7 @@ suite('Sign and verify signatures', function() {
         _.times(999, function() {
             var url = _randomURL(),
                 secret = Faker.random.number(Date.now()).toString(36),
-                signed = Sign.sign(url, secret),
+                signed = Sign.url(url, secret),
                 hacked = Url.parse(signed, true),
                 query = hacked.query;
 
@@ -49,14 +49,14 @@ suite('Sign and verify signatures', function() {
         _.times(999, function() {
             var url = _randomURL(),
                 secret = Faker.random.number(Date.now()).toString(36),
-                signed = Sign.sign(url, secret),
+                signed = Sign.url(url, secret),
                 shuffled = Url.parse(signed, true),
                 query = shuffled.query;
 
             query = _.reduce(_.shuffle(_.keys(query)), function(q, key) {
                 q[key] = query[key];
                 return q;
-            }, {})
+            }, {});
 
             shuffled.search = Query.stringify(query);
 
