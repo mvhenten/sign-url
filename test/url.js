@@ -29,6 +29,19 @@ suite('Sign and verify signatures', function() {
         });
     });
 
+    test('Optional parameters may be passed in as third argument', function() {
+        var url = _randomURL(),
+            secret = Faker.random.number(Date.now()).toString(36);
+
+        var signed = Sign.url(url, secret, {
+            algo: 'sha512',
+            digest: 'hex'
+        }),
+            check = Url.parse(signed, true);
+
+        assert.equal(check.query.signature.length, 128, 'sha1 hex digest is 128 characters');
+    });
+
     test('Query cannot be tampered with', function() {
         _.times(999, function() {
             var url = _randomURL(),
